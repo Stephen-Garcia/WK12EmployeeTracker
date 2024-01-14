@@ -1,133 +1,133 @@
 const connection = require("./connection");
 
-class EmployeeDatabase {
-  constructor(dbConnection) {
-    this.dbConnection = dbConnection;
+class EmployeeDB {
+  constructor(connection) {
+    this.connection = connection;
   }
 
-  async fetchAllEmployees() {
+  async findEmployees() {
     const query = `
       SELECT 
-        emp.id, emp.first_name, emp.last_name, 
-        role.title, dept.name AS department, role.salary, 
-        CONCAT(manager.first_name, ' ', manager.last_name) AS manager 
+        e.id, e.first_name, e.last_name, 
+        r.title, d.name AS department, r.salary, 
+        CONCAT(m.first_name, ' ', m.last_name) AS manager 
       FROM 
-        employee emp
-        LEFT JOIN role ON emp.role_id = role.id
-        LEFT JOIN department dept ON role.department_id = dept.id
-        LEFT JOIN employee manager ON manager.id = emp.manager_id;
+        employee e
+        LEFT JOIN role r ON e.role_id = r.id
+        LEFT JOIN department d ON r.department_id = d.id
+        LEFT JOIN employee m ON m.id = e.manager_id;
     `;
 
-    return this.dbConnection.promise().query(query);
+    return this.connection.promise().query(query);
   }
 
-  async fetchManagers(employeeId) {
+  async findManagers(employeeId) {
     const query =
       "SELECT id, first_name, last_name FROM employee WHERE id != ?";
-    return this.dbConnection.promise().query(query, employeeId);
+    return this.connection.promise().query(query, employeeId);
   }
 
-  async addNewEmployee(employeeData) {
+  async createEmployee(employee) {
     const query = "INSERT INTO employee SET ?";
-    return this.dbConnection.promise().query(query, employeeData);
+    return this.connection.promise().query(query, employee);
   }
 
-  async removeStaffMember(employeeId) {
+  async removeEmployee(employeeId) {
     const query = "DELETE FROM employee WHERE id = ?";
-    return this.dbConnection.promise().query(query, employeeId);
+    return this.connection.promise().query(query, employeeId);
   }
 
-  async modifyEmployeeRole(employeeId, roleId) {
+  async updateEmployeeRole(employeeId, roleId) {
     const query = "UPDATE employee SET role_id = ? WHERE id = ?";
-    return this.dbConnection.promise().query(query, [roleId, employeeId]);
+    return this.connection.promise().query(query, [roleId, employeeId]);
   }
 
-  async changeManager(employeeId, newManagerId) {
+  async updateEmployeeManager(employeeId, managerId) {
     const query = "UPDATE employee SET manager_id = ? WHERE id = ?";
-    return this.dbConnection.promise().query(query, [newManagerId, employeeId]);
+    return this.connection.promise().query(query, [managerId, employeeId]);
   }
 
-  async getAllRoles() {
+  async findAllRoles() {
     const query = `
       SELECT 
-        r.id, r.title, dept.name AS department, r.salary 
+        r.id, r.title, d.name AS department, r.salary 
       FROM 
         role r
-        LEFT JOIN department dept ON r.department_id = dept.id;
+        LEFT JOIN department d ON r.department_id = d.id;
     `;
 
-    return this.dbConnection.promise().query(query);
+    return this.connection.promise().query(query);
   }
 
-  async createNewRole(roleData) {
+  async createRole(role) {
     const query = "INSERT INTO role SET ?";
-    return this.dbConnection.promise().query(query, roleData);
+    return this.connection.promise().query(query, role);
   }
 
-  async deleteRole(roleId) {
+  async removeRole(roleId) {
     const query = "DELETE FROM role WHERE id = ?";
-    return this.dbConnection.promise().query(query, roleId);
+    return this.connection.promise().query(query, roleId);
   }
 
-  async getDepartments() {
+  async findDepartments() {
     const query = "SELECT id, name FROM department;";
-    return this.dbConnection.promise().query(query);
+    return this.connection.promise().query(query);
   }
 
-  async checkBudgets() {
+  async viewBudgets() {
     const query = `
       SELECT 
-        dept.id, dept.name, SUM(r.salary) AS utilized_budget 
+        d.id, d.name, SUM(r.salary) AS utilized_budget 
       FROM 
-        employee emp
-        LEFT JOIN role r ON emp.role_id = r.id
-        LEFT JOIN department dept ON r.department_id = dept.id
+        employee e
+        LEFT JOIN role r ON e.role_id = r.id
+        LEFT JOIN department d ON r.department_id = d.id
       GROUP BY 
-        dept.id, dept.name;
+        d.id, d.name;
     `;
 
-    return this.dbConnection.promise().query(query);
+    return this.connection.promise().query(query);
   }
 
-  async createNewDepartment(departmentData) {
+  async createDepartment(department) {
     const query = "INSERT INTO department SET ?";
-    return this.dbConnection.promise().query(query, departmentData);
+    return this.connection.promise().query(query, department);
   }
 
-  async eliminateDepartment(departmentId) {
+  async removeDepartment(departmentId) {
     const query = "DELETE FROM department WHERE id = ?";
-    return this.dbConnection.promise().query(query, departmentId);
+    return this.connection.promise().query(query, departmentId);
   }
 
-  async getEmployeesByDepartment(departmentId) {
+  async findEmployeesByDepartment(departmentId) {
     const query = `
       SELECT 
-        emp.id, emp.first_name, emp.last_name, r.title 
+        e.id, e.first_name, e.last_name, r.title 
       FROM 
-        employee emp
-        LEFT JOIN role r ON emp.role_id = r.id
-        LEFT JOIN department dept ON r.department_id = dept.id
+        employee e
+        LEFT JOIN role r ON e.role_id = r.id
+        LEFT JOIN department d ON r.department_id = d.id
       WHERE 
-        dept.id = ?;
+        d.id = ?;
     `;
 
-    return this.dbConnection.promise().query(query, departmentId);
+    return this.connection.promise().query(query, departmentId);
   }
 
-  async getEmployeesBySupervisor(supervisorId) {
+  async findEmployeesManager(managerId) {
     const query = `
       SELECT 
-        emp.id, emp.first_name, emp.last_name, dept.name AS department, r.title 
+        e.id, e.first_name, e.last_name, d.name AS department, r.title 
       FROM 
-        employee emp
-        LEFT JOIN role r ON r.id = emp.role_id
-        LEFT JOIN department dept ON dept.id = r.department_id
+        employee e
+        LEFT JOIN role r ON r.id = e.role_id
+        LEFT JOIN department d ON d.id = r.department_id
       WHERE 
-        emp.manager_id = ?;
+        e.manager_id = ?;
     `;
 
-    return this.dbConnection.promise().query(query, supervisorId);
+    return this.connection.promise().query(query, managerId);
   }
 }
 
-module.exports = new EmployeeDatabase(connection);
+module.exports = new EmployeeDB(connection);

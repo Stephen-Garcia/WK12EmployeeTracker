@@ -88,7 +88,7 @@ async function loadMainPrompts() {
 }
 
 async function viewEmployees() {
-  const [rows] = await DB.findAllEmployees();
+  const [rows] = await DB.findEmployees();
   const employees = rows;
   console.log("\n");
   console.table(employees);
@@ -96,7 +96,7 @@ async function viewEmployees() {
 }
 
 async function viewEmployeesByDepartment() {
-  const [rows] = await DB.findAllDepartments();
+  const [rows] = await DB.findDepartments();
   const departments = rows;
   const departmentChoices = departments.map(({ id, name }) => ({
     name,
@@ -112,7 +112,7 @@ async function viewEmployeesByDepartment() {
     },
   ]);
 
-  const [employeesRows] = await DB.findAllEmployeesByDepartment(departmentId);
+  const [employeesRows] = await DB.findEmployeesByDepartment(departmentId);
   const employees = employeesRows;
   console.log("\n");
   console.table(employees);
@@ -120,7 +120,7 @@ async function viewEmployeesByDepartment() {
 }
 
 async function viewEmployeesByManager() {
-  const [rows] = await DB.findAllEmployees();
+  const [rows] = await DB.findEmployees();
   const managers = rows;
   const managerChoices = managers.map(({ id, first_name, last_name }) => ({
     name: `${first_name} ${last_name}`,
@@ -136,7 +136,7 @@ async function viewEmployeesByManager() {
     },
   ]);
 
-  const [employeesRows] = await DB.findAllEmployeesByManager(managerId);
+  const [employeesRows] = await DB.findEmployeesManager(managerId);
   const employees = employeesRows;
   console.log("\n");
   if (employees.length === 0) {
@@ -148,7 +148,7 @@ async function viewEmployeesByManager() {
 }
 
 async function removeEmployee() {
-  const [rows] = await DB.findAllEmployees();
+  const [rows] = await DB.findEmployees();
   const employees = rows;
   const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
     name: `${first_name} ${last_name}`,
@@ -170,7 +170,7 @@ async function removeEmployee() {
 }
 
 async function updateEmployeeRole() {
-  const [rows] = await DB.findAllEmployees();
+  const [rows] = await DB.findEmployees();
   const employees = rows;
   const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
     name: `${first_name} ${last_name}`,
@@ -192,7 +192,7 @@ async function updateEmployeeRole() {
       name: "roleId",
       message: "Which role do you want to assign the selected employee?",
       choices: (
-        await DB.findAllRoles()
+        await DB.findRoles()
       )[0].map(({ id, title }) => ({
         name: title,
         value: id,
@@ -206,7 +206,7 @@ async function updateEmployeeRole() {
 }
 
 async function updateEmployeeManager() {
-  const [rows] = await DB.findAllEmployees();
+  const [rows] = await DB.findEmployees();
   const employees = rows;
   const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
     name: `${first_name} ${last_name}`,
@@ -229,7 +229,7 @@ async function updateEmployeeManager() {
       message:
         "Which employee do you want to set as manager for the selected employee?",
       choices: (
-        await DB.findAllPossibleManagers(employeeId)
+        await DB.findManagers(employeeId)
       )[0].map(({ id, first_name, last_name }) => ({
         name: `${first_name} ${last_name}`,
         value: id,
@@ -243,7 +243,7 @@ async function updateEmployeeManager() {
 }
 
 async function viewRoles() {
-  const [rows] = await DB.findAllRoles();
+  const [rows] = await DB.findRoles();
   const roles = rows;
   console.log("\n");
   console.table(roles);
@@ -251,7 +251,7 @@ async function viewRoles() {
 }
 
 async function addRole() {
-  const departments = (await DB.findAllDepartments())[0];
+  const departments = (await DB.findDepartments())[0];
   const departmentChoices = departments.map(({ id, name }) => ({
     name,
     value: id,
@@ -280,7 +280,7 @@ async function addRole() {
 }
 
 async function removeRole() {
-  const [rows] = await DB.findAllRoles();
+  const [rows] = await DB.findRoles();
   const roles = rows;
   const roleChoices = roles.map(({ id, title }) => ({
     name: title,
@@ -303,7 +303,7 @@ async function removeRole() {
 }
 
 async function viewDepartments() {
-  const [rows] = await DB.findAllDepartments();
+  const [rows] = await DB.findDepartments();
   const departments = rows;
   console.log("\n");
   console.table(departments);
@@ -324,7 +324,7 @@ async function addDepartment() {
 }
 
 async function removeDepartment() {
-  const [rows] = await DB.findAllDepartments();
+  const [rows] = await DB.findDepartments();
   const departments = rows;
   const departmentChoices = departments.map(({ id, name }) => ({
     name,
@@ -347,7 +347,7 @@ async function removeDepartment() {
 }
 
 async function viewUtilizedBudgetByDepartment() {
-  const [rows] = await DB.viewDepartmentBudgets();
+  const [rows] = await DB.viewBudgets();
   const departments = rows;
   console.log("\n");
   console.table(departments);
@@ -366,13 +366,13 @@ async function addEmployee() {
     },
   ]);
 
-  const roles = (await DB.findAllRoles())[0];
+  const roles = (await DB.findRoles())[0];
   const roleChoices = roles.map(({ id, title }) => ({
     name: title,
     value: id,
   }));
 
-  const employees = (await DB.findAllEmployees())[0];
+  const employees = (await DB.findEmployees())[0];
   const managerChoices = employees.map(({ id, first_name, last_name }) => ({
     name: `${first_name} ${last_name}`,
     value: id,

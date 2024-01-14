@@ -47,7 +47,7 @@ class EmployeeDB {
     return this.connection.promise().query(query, [managerId, employeeId]);
   }
 
-  async findAllRoles() {
+  async findRoles() {
     const query = `
       SELECT 
         r.id, r.title, d.name AS department, r.salary 

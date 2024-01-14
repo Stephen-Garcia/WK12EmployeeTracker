@@ -5,7 +5,7 @@ class EmployeeDB {
     this.connection = connection;
   }
 
-  async findAllEmployees() {
+  async findEmployees() {
     const query = `
       SELECT 
         e.id, e.first_name, e.last_name, 
@@ -21,8 +21,9 @@ class EmployeeDB {
     return this.connection.promise().query(query);
   }
 
-  async findAllPossibleManagers(employeeId) {
-    const query = "SELECT id, first_name, last_name FROM employee WHERE id != ?";
+  async findManagers(employeeId) {
+    const query =
+      "SELECT id, first_name, last_name FROM employee WHERE id != ?";
     return this.connection.promise().query(query, employeeId);
   }
 
@@ -68,12 +69,12 @@ class EmployeeDB {
     return this.connection.promise().query(query, roleId);
   }
 
-  async findAllDepartments() {
+  async findDepartments() {
     const query = "SELECT id, name FROM department;";
     return this.connection.promise().query(query);
   }
 
-  async viewDepartmentBudgets() {
+  async viewBudgets() {
     const query = `
       SELECT 
         d.id, d.name, SUM(r.salary) AS utilized_budget 
@@ -98,7 +99,7 @@ class EmployeeDB {
     return this.connection.promise().query(query, departmentId);
   }
 
-  async findAllEmployeesByDepartment(departmentId) {
+  async findEmployeesByDepartment(departmentId) {
     const query = `
       SELECT 
         e.id, e.first_name, e.last_name, r.title 
@@ -113,7 +114,7 @@ class EmployeeDB {
     return this.connection.promise().query(query, departmentId);
   }
 
-  async findAllEmployeesByManager(managerId) {
+  async findEmployeesManager(managerId) {
     const query = `
       SELECT 
         e.id, e.first_name, e.last_name, d.name AS department, r.title 

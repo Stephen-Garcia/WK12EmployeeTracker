@@ -19,6 +19,6 @@ This application is covered by the Open license.
 ## Contribution-Guidelines
 Open an issue from the issues tab at the repository homepage to report problems.
 ## Video/Images
-[screen-recorder-thu-dec-28-2023-14-25-28.webm](https://github.com/Stephen-Garcia/WK12EmployeeTracker/assets/92559337/038285b4-7049-4c00-8445-b3c03dc335d8)
+[screen-recorder-sun-jan-14-2024-16-59-12.webm](https://github.com/Stephen-Garcia/WK12EmployeeTracker/assets/92559337/41032a10-c07a-49c3-ad1f-ec6996cbaf6f)
 ## Questions
 GitHub: https://github.com/Stephen-Garcia

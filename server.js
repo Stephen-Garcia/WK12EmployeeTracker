@@ -336,7 +336,7 @@ async function removeDepartment() {
       type: "list",
       name: "departmentId",
       message:
-        "Which department would you like to remove? (Warning: This will also remove associated roles and employees)",
+        "Which department would you like to remove?",
       choices: departmentChoices,
     },
   ]);
